@@ -1213,7 +1213,7 @@ export default function App() {
           </div>
 
           <p className="text-xs sm:text-sm font-mono text-zinc-400/90 tracking-tight mb-8 select-none">
-            #To return to the previous page, right click if you navigated here using the buttons
+            #To return to the previous page, right click if you navigated using the buttons
           </p>
         </div>
 
