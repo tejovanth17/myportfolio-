@@ -838,6 +838,35 @@ export default function App() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isScrollingDown, setIsScrollingDown] = useState(true);
   const [openFaqIndices, setOpenFaqIndices] = useState([0]);
+  const [returnTarget, setReturnTarget] = useState(null);
+
+  const handleNavigateWithReturn = (targetSlideId, sourceSlideId = 'slide-1') => {
+    setReturnTarget(sourceSlideId);
+    const el = document.getElementById(targetSlideId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.location.hash = `#${targetSlideId}`;
+    }
+  };
+
+  const handleRightClickReturn = (e) => {
+    // Preserve default context menu for input and textarea
+    if (e.target && ['INPUT', 'TEXTAREA'].includes(e.target.tagName)) {
+      return;
+    }
+
+    if (returnTarget) {
+      e.preventDefault();
+      const targetEl = document.getElementById(returnTarget);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        window.location.hash = `#${returnTarget}`;
+      }
+      setReturnTarget(null);
+    }
+  };
 
   const handleContactSubmit = async (e) => {
     e.preventDefault();
@@ -1249,13 +1278,21 @@ export default function App() {
           <div className="flex flex-wrap items-center gap-4 mb-4">
             <a
               href="#slide-8"
-              className="px-6 py-3 bg-zinc-100 text-zinc-950 font-semibold text-xs tracking-wider uppercase rounded-xl shadow-[0_5px_15px_rgba(255,255,255,0.15),0_2px_4px_rgba(0,0,0,0.4)] hover:-translate-y-1 hover:shadow-[0_10px_24px_rgba(255,255,255,0.25)] hover:bg-white active:translate-y-0.5 transition-all duration-200"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavigateWithReturn('slide-8', 'slide-1');
+              }}
+              className="px-6 py-3 bg-zinc-100 text-zinc-950 font-semibold text-xs tracking-wider uppercase rounded-xl shadow-[0_5px_15px_rgba(255,255,255,0.15),0_2px_4px_rgba(0,0,0,0.4)] hover:-translate-y-1 hover:shadow-[0_10px_24px_rgba(255,255,255,0.25)] hover:bg-white active:translate-y-0.5 transition-all duration-200 cursor-pointer"
             >
               Get In Touch
             </a>
             <a
               href="#slide-4"
-              className="px-6 py-3 bg-zinc-900 border border-zinc-700/80 text-zinc-200 font-semibold text-xs tracking-wider uppercase rounded-xl shadow-[0_5px_15px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.1)] hover:-translate-y-1 hover:border-zinc-400 hover:text-white hover:shadow-[0_10px_24px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.2)] active:translate-y-0.5 transition-all duration-200"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavigateWithReturn('slide-4', 'slide-1');
+              }}
+              className="px-6 py-3 bg-zinc-900 border border-zinc-700/80 text-zinc-200 font-semibold text-xs tracking-wider uppercase rounded-xl shadow-[0_5px_15px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.1)] hover:-translate-y-1 hover:border-zinc-400 hover:text-white hover:shadow-[0_10px_24px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.2)] active:translate-y-0.5 transition-all duration-200 cursor-pointer"
             >
               Projects
             </a>
@@ -1449,7 +1486,11 @@ export default function App() {
       </section>
 
       {/* Slide 4: Featured Projects */}
-      <section id="slide-4" className="min-h-screen w-full snap-start flex flex-col justify-center px-6 sm:px-12 md:px-16 max-w-7xl mx-auto border-b border-zinc-900 relative py-16 sm:py-20 md:py-24">
+      <section
+        id="slide-4"
+        onContextMenu={handleRightClickReturn}
+        className="min-h-screen w-full snap-start flex flex-col justify-center px-6 sm:px-12 md:px-16 max-w-7xl mx-auto border-b border-zinc-900 relative py-16 sm:py-20 md:py-24"
+      >
 
         {/* Top Header Area: Left aligned heading with same line passage text */}
         <div className="mb-6 sm:mb-8 flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4">
@@ -1620,7 +1661,11 @@ export default function App() {
       </section>
 
       {/* Slide 8: Get In Touch */}
-      <section id="slide-8" className="min-h-screen w-full snap-start flex flex-col justify-center px-6 sm:px-12 md:px-16 max-w-5xl mx-auto py-16 sm:py-20">
+      <section
+        id="slide-8"
+        onContextMenu={handleRightClickReturn}
+        className="min-h-screen w-full snap-start flex flex-col justify-center px-6 sm:px-12 md:px-16 max-w-5xl mx-auto py-16 sm:py-20"
+      >
         <h2 className="text-3xl sm:text-4xl font-black text-zinc-100 mb-2 text-center drop-shadow-sm uppercase tracking-tight">
           Get In Touch
         </h2>
