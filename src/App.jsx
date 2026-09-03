@@ -717,6 +717,77 @@ function RotatingSubtitle() {
   );
 }
 
+const METALLIC_HINT_THEMES = [
+  {
+    name: 'Liquid Platinum',
+    gradient: 'from-slate-100 via-zinc-400 to-slate-200',
+    glow: 'drop-shadow-[0_0_10px_rgba(241,245,249,0.7)]',
+    dot: 'bg-slate-200 shadow-[0_0_8px_rgba(241,245,249,0.9)]'
+  },
+  {
+    name: 'Imperial 24K Gold',
+    gradient: 'from-amber-100 via-yellow-400 to-amber-200',
+    glow: 'drop-shadow-[0_0_10px_rgba(250,204,21,0.7)]',
+    dot: 'bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.9)]'
+  },
+  {
+    name: 'Rose Gold Metallic',
+    gradient: 'from-rose-100 via-pink-400 to-rose-200',
+    glow: 'drop-shadow-[0_0_10px_rgba(244,114,182,0.7)]',
+    dot: 'bg-pink-400 shadow-[0_0_8px_rgba(244,114,182,0.9)]'
+  },
+  {
+    name: 'Cyber Blue Steel',
+    gradient: 'from-cyan-100 via-sky-400 to-cyan-200',
+    glow: 'drop-shadow-[0_0_10px_rgba(56,189,248,0.7)]',
+    dot: 'bg-cyan-400 shadow-[0_0_8px_rgba(56,189,248,0.9)]'
+  },
+  {
+    name: 'Chromium Jade',
+    gradient: 'from-emerald-100 via-teal-400 to-emerald-200',
+    glow: 'drop-shadow-[0_0_10px_rgba(52,211,153,0.7)]',
+    dot: 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]'
+  },
+  {
+    name: 'Polished Bronze',
+    gradient: 'from-orange-100 via-amber-400 to-orange-200',
+    glow: 'drop-shadow-[0_0_10px_rgba(251,146,60,0.7)]',
+    dot: 'bg-orange-400 shadow-[0_0_8px_rgba(251,146,60,0.9)]'
+  }
+];
+
+function MetallicReturnHint() {
+  const [index, setIndex] = useState(0);
+  const [fade, setFade] = useState(true);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setFade(false);
+      setTimeout(() => {
+        setIndex((prev) => (prev + 1) % METALLIC_HINT_THEMES.length);
+        setFade(true);
+      }, 350);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const theme = METALLIC_HINT_THEMES[index];
+
+  return (
+    <div className="flex items-center gap-2 mb-8 select-none">
+      <span className={`inline-block w-1.5 h-1.5 rounded-full transition-all duration-700 ${theme.dot}`} />
+      <p
+        className={`text-xs sm:text-sm font-mono font-bold tracking-tight bg-gradient-to-r ${theme.gradient} bg-clip-text text-transparent ${theme.glow} transition-all duration-700 ease-in-out transform ${
+          fade ? 'opacity-100 translate-y-0' : 'opacity-30 -translate-y-0.5'
+        }`}
+      >
+        #To return to the previous page, right click if you navigated using the buttons
+      </p>
+    </div>
+  );
+}
+
 // Collapsible FAQ Card with smooth expanding chevron and readable high-contrast styling
 function FAQCard({ item, isOpen, onToggle }) {
   return (
@@ -1212,9 +1283,7 @@ export default function App() {
             </a>
           </div>
 
-          <p className="text-xs sm:text-sm font-mono text-zinc-400/90 tracking-tight mb-8 select-none">
-            #To return to the previous page, right click if you navigated using the buttons
-          </p>
+          <MetallicReturnHint />
         </div>
 
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-zinc-600 animate-bounce">
