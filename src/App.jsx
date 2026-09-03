@@ -1280,9 +1280,6 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs sm:text-sm font-mono font-medium">
-                  ⚡ Continuously learning on LLMs to support and amplify these skills.
-                </div>
               </div>
 
             </div>
