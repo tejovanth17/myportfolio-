@@ -1191,7 +1191,7 @@ export default function App() {
           </div>
 
           {/* 3D Social Buttons */}
-          <div className="flex flex-wrap items-center gap-3 mb-10 text-zinc-400">
+          <div className="flex flex-wrap items-center gap-3 mb-3 text-zinc-400">
             <a
               href="https://github.com/tejovanth17"
               target="_blank"
@@ -1211,6 +1211,10 @@ export default function App() {
               <span>LinkedIn</span>
             </a>
           </div>
+
+          <p className="text-xs sm:text-sm font-mono text-zinc-400/90 tracking-tight mb-8 select-none">
+            #To return to the previous page, right click if you navigated here using the buttons
+          </p>
         </div>
 
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-zinc-600 animate-bounce">
