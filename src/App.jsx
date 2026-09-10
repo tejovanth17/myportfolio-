@@ -6,6 +6,7 @@ import {
   Brain, Users, Sparkles, Layers, Database, Globe, ArrowUp,
   CheckCircle2, AlertCircle, Loader2
 } from 'lucide-react';
+import { useBehaviorTelemetry } from './hooks/useBehaviorTelemetry';
 
 function Github({ size = 20, className = '', ...props }) {
   return (
@@ -831,6 +832,13 @@ export default function App() {
   const containerRef = useRef(null);
   const lastScrollTop = useRef(0);
   const rafId = useRef(null);
+
+  const {
+    getFormattedReport,
+    markFormSubmitted,
+    reportScrollProgress
+  } = useBehaviorTelemetry();
+
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [formStatus, setFormStatus] = useState('idle'); // 'idle' | 'sending' | 'success' | 'error'
   const [formFeedback, setFormFeedback] = useState('');
@@ -885,9 +893,12 @@ export default function App() {
     const autoReplyTemplateId = import.meta.env.VITE_EMAILJS_AUTOREPLY_TEMPLATE_ID || 'template_aj518l9';
     const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || '8_FzZL87L8oDYmfhN';
 
-    const templateParams = {
-      title: `New Portfolio Message from ${formData.name}`,
-      subject: `New Portfolio Message from ${formData.name}`,
+    // Compile the visitor's behavioral pattern analysis leading up to this message
+    const behavioralReport = getFormattedReport();
+
+    const notificationParams = {
+      title: `New Message & Behavioral Analysis from ${formData.name}`,
+      subject: `New Message & Behavioral Analysis from ${formData.name}`,
       from_name: formData.name,
       name: formData.name,
       user_name: formData.name,
@@ -897,19 +908,35 @@ export default function App() {
       reply_to: formData.email,
       to_name: 'Thomala Tejovanth',
       to_email: 'tejovanth16@gmail.com',
+      message: `${formData.message}\n\n================================================================================\n⚡ PRE-CONTACT VISITOR BEHAVIORAL INTELLIGENCE DOSSIER\n================================================================================\n${behavioralReport}`,
+    };
+
+    const autoReplyParams = {
+      title: `Thank you for contacting Thomala Tejovanth`,
+      subject: `Thank you for contacting Thomala Tejovanth`,
+      from_name: 'Thomala Tejovanth',
+      name: formData.name,
+      user_name: formData.name,
+      from_email: 'tejovanth16@gmail.com',
+      email: formData.email,
+      user_email: formData.email,
+      reply_to: 'tejovanth16@gmail.com',
+      to_name: formData.name,
+      to_email: formData.email,
       message: formData.message,
     };
 
     try {
-      // 1. Send incoming message directly to your inbox
-      const sendNotification = emailjs.send(serviceId, notificationTemplateId, templateParams, publicKey);
+      // 1. Send incoming message + complete behavioral dossier directly to your inbox
+      const sendNotification = emailjs.send(serviceId, notificationTemplateId, notificationParams, publicKey);
 
-      // 2. Send auto-reply confirmation to the visitor
-      const sendAutoReply = emailjs.send(serviceId, autoReplyTemplateId, templateParams, publicKey);
+      // 2. Send clean auto-reply confirmation to the visitor (NO behavioral report leaked)
+      const sendAutoReply = emailjs.send(serviceId, autoReplyTemplateId, autoReplyParams, publicKey);
 
       await Promise.all([sendNotification, sendAutoReply]);
 
       setFormStatus('success');
+      markFormSubmitted();
       setFormFeedback('Thank you! Your message has been sent directly to tejovanth16@gmail.com.');
       setFormData({ name: '', email: '', message: '' });
     } catch (err) {
@@ -953,6 +980,7 @@ export default function App() {
       if (totalScroll > 0) {
         const progress = Math.min(100, Math.max(0, (currentScrollTop / totalScroll) * 100));
         setScrollProgress(progress);
+        reportScrollProgress(progress);
       }
     });
   };
